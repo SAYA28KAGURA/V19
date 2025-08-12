@@ -86,7 +86,6 @@
     }
     .toggle-btn:active { background: #9a8c98; }
     .toggle-btn svg { width: 22px; height: 22px; fill: #4a4e69; transition: transform 0.3s; }
-    /* 箭頭旋轉動畫 */
     .toggle-btn .arrow.collapsed {
       transform: rotate(180deg);
     }
@@ -94,7 +93,6 @@
       transform: rotate(0deg);
     }
 
-    /* ====== 這裡是語言切換按鈕的新位置設計 ====== */
     .lang-switcher {
       position: fixed;
       bottom: 22px;
@@ -160,8 +158,6 @@
       box-sizing: border-box;
       z-index: 1;
     }
-
-    /* ==== 小工具側欄寬度調整開始 ==== */
     .toolsbar {
       width: 300px;
       min-width: 200px;
@@ -194,7 +190,6 @@
       position: static;
       top: auto;
     }
-    /* ==== 小工具側欄寬度調整結束 ==== */
 
     .tool-card {
       background: #fffdfaee;
@@ -237,6 +232,54 @@
       color: #fff !important;
       font-weight: bold;
       border-radius: 7px;
+    }
+    #toolQuote #quoteArea {
+      text-align: center;
+    }
+    .tool-card .center-btn-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0.3em;
+      margin-top: 0.1em;
+    }
+    #fortuneResult,
+    #signStatus {
+      text-align: center !important;
+    }
+    /* 專注計時器輸入與顯示區塊置中 */
+    .focus-timer-inputs {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.2em;
+      margin-bottom: 0.3em;
+    }
+    .focus-timer-inputs input {
+      width: 2.9em;
+      text-align: center;
+      font-size: 1em;
+      margin: 0 0.08em;
+      padding: 0.2em 0.2em;
+      border-radius: 8px;
+      border: 1px solid #c9ada7;
+      background: #f9f6f2;
+      color: #4a4e69;
+    }
+    .focus-timer-label {
+      margin: 0 0.13em 0 0.06em;
+      font-size: 0.97em;
+      color: #4a4e69;
+    }
+    #timerShow {
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.15em;
+      color: #4a4e69;
+      font-weight: bold;
+      margin-top: 0.4em;
+      letter-spacing: 0.07em;
+      min-width: 10em;
     }
     .align-bar {
       text-align: right;
@@ -383,17 +426,23 @@
         </div>
         <div class="tool-card">
           <h3 data-i18n="fortune_title">今日占卜</h3>
-          <button class="mini-btn" onclick="drawFortune()" data-i18n="draw">抽一籤</button>
+          <div class="center-btn-box">
+            <button class="mini-btn" onclick="drawFortune()" data-i18n="draw">抽一籤</button>
+          </div>
           <div id="fortuneResult" style="margin-top:0.6em;color:#9a8c98;font-weight:bold;"></div>
         </div>
         <div class="tool-card">
           <h3 data-i18n="timer_title">專注計時</h3>
-          <div>
-            <input id="timerInput" type="number" min="1" max="180" value="5" style="width:55px;text-align:right;">
-            <span data-i18n="minute">分</span>
+          <div class="focus-timer-inputs">
+            <input id="timerHour" type="number" min="0" max="9999" value="00" maxlength="4" inputmode="numeric">
+            <span class="focus-timer-label">時</span>
+            <input id="timerMin" type="number" min="0" max="59" value="00" maxlength="2" inputmode="numeric">
+            <span class="focus-timer-label">分</span>
+            <input id="timerSec" type="number" min="0" max="59" value="00" maxlength="2" inputmode="numeric">
+            <span class="focus-timer-label">秒</span>
             <button class="mini-btn" onclick="startTimer()" data-i18n="start">開始</button>
           </div>
-          <div id="timerShow" style="margin-top:0.4em; font-size:1.15em;color:#4a4e69;font-weight:bold;">00:00</div>
+          <div id="timerShow">00:00:00</div>
         </div>
       </div>
       <!-- 主內容 -->
@@ -493,7 +542,9 @@
       <div class="toolsbar" id="rightTools">
         <div class="tool-card">
           <h3 data-i18n="card_title">夢女抽卡</h3>
-          <button class="mini-btn" onclick="drawCard()" data-i18n="draw_card">抽一張</button>
+          <div class="center-btn-box">
+            <button class="mini-btn" onclick="drawCard()" data-i18n="draw_card">抽一張</button>
+          </div>
           <div id="cardResult" style="margin-top:0.6em;text-align:center;font-weight:bold;color:#4a4e69;"></div>
         </div>
         <div class="tool-card">
@@ -502,7 +553,9 @@
         </div>
         <div class="tool-card">
           <h3 data-i18n="sign_title">每日打卡</h3>
-          <button class="mini-btn" onclick="dailySign()" data-i18n="sign">打卡！</button>
+          <div class="center-btn-box">
+            <button class="mini-btn" onclick="dailySign()" data-i18n="sign">打卡！</button>
+          </div>
           <div id="signStatus" style="margin-top:0.4em;font-size:1em;color:#9a8c98;font-weight:bold;"></div>
         </div>
       </div>
@@ -608,31 +661,92 @@
       const lang = getLang();
       const arr = lang==="en"?fortunes_en:fortunes;
       const idx = Math.floor(Math.random()*arr.length);
-      document.getElementById('fortuneResult').textContent = arr[idx];
+      var el = document.getElementById('fortuneResult');
+      el.textContent = arr[idx];
+      el.style.textAlign = "center";
     }
 
-    // 計時器
+    // ====== 專注計時(時分秒) ======
     let timer = null, timerCount = 0;
+    function pad(num, len=2) {
+      num = Number(num);
+      let s = num.toString();
+      while(s.length < len) s = "0" + s;
+      return s;
+    }
+    function getTimerInputValue(id, max, def) {
+      let v = document.getElementById(id).value;
+      if (v == null || v === "") return def;
+      v = v.replace(/^0+/, '') || "0";
+      v = Math.max(0, Math.min(parseInt(v), max));
+      return v;
+    }
+    function updateTimerInputsDisplay() {
+      // always keep "00" style for empty box
+      ['timerHour','timerMin','timerSec'].forEach((id, i) => {
+        let el = document.getElementById(id);
+        let val = el.value;
+        if(val === "" || isNaN(Number(val))) el.value = "00";
+        else el.value = pad(Number(val), id==='timerHour'?2:2);
+      });
+    }
     function startTimer() {
       if(timer) clearInterval(timer);
-      let min = parseInt(document.getElementById('timerInput').value)||1;
-      timerCount = min*60;
+      let hour = getTimerInputValue('timerHour', 9999, 0);
+      let min = getTimerInputValue('timerMin', 59, 0);
+      let sec = getTimerInputValue('timerSec', 59, 0);
+      let total = hour*3600 + min*60 + sec;
+      if(total <= 0) {
+        showTimer(0);
+        return;
+      }
+      timerCount = total;
       showTimer();
       timer = setInterval(()=>{
         timerCount--;
         showTimer();
         if(timerCount<=0) {
           clearInterval(timer);
+          showTimer(0);
           document.getElementById('timerShow').textContent = getLang()==="en" ? "Done!" : "完成！";
+          document.getElementById('timerShow').style.textAlign = "center";
           alert(getLang()==="en" ? "Time's up!" : "時間到！");
         }
       },1000);
     }
-    function showTimer(){
-      let m = Math.floor(timerCount/60);
-      let s = timerCount%60;
-      document.getElementById('timerShow').textContent = (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
+    function showTimer(val) {
+      let cnt = typeof(val)==="number"?val:timerCount;
+      cnt = Math.max(0, cnt);
+      let h = Math.floor(cnt/3600);
+      let m = Math.floor((cnt%3600)/60);
+      let s = cnt%60;
+      document.getElementById('timerShow').textContent = pad(h,2)+":"+pad(m,2)+":"+pad(s,2);
+      document.getElementById('timerShow').style.textAlign = "center";
     }
+    // 輸入框自動補0與格式管控
+    ['timerHour','timerMin','timerSec'].forEach(function(id){
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById(id).addEventListener('blur', updateTimerInputsDisplay);
+        document.getElementById(id).addEventListener('input', function(e){
+          let v = e.target.value.replace(/\D/g,'');
+          if (id==='timerHour') {
+            if(v.length > 4) v = v.slice(0,4);
+            if(Number(v)>9999) v = "9999";
+          } else {
+            if(v.length > 2) v = v.slice(0,2);
+            if(Number(v)>59) v = "59";
+          }
+          e.target.value = v;
+        });
+      });
+    });
+    // 預設00:00:00
+    document.addEventListener('DOMContentLoaded', function(){
+      document.getElementById('timerHour').value = "00";
+      document.getElementById('timerMin').value = "00";
+      document.getElementById('timerSec').value = "00";
+      showTimer(0);
+    });
 
     // 夢女抽卡
     const cards = [
@@ -693,14 +807,16 @@
     function showSignStatus(){
       let d = new Date(), key = "dreamsign-"+d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
       let lang = getLang();
+      var el = document.getElementById('signStatus');
       if(localStorage.getItem(key))
-        document.getElementById('signStatus').textContent = lang==="en"
+        el.textContent = lang==="en"
           ? "Checked in! Your oshimen gives you a thumbs up 👍"
           : "已打卡！推子給你一個讚👍";
       else
-        document.getElementById('signStatus').textContent = lang==="en"
+        el.textContent = lang==="en"
           ? "Not checked in today yet!"
           : "今日尚未打卡！";
+      el.style.textAlign = "center";
     }
     showSignStatus();
 
